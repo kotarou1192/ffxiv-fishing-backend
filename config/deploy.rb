@@ -1,8 +1,8 @@
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.14.1"
 
-set :application, "my_app_name"
-set :repo_url, "git@example.com:me/my_repo.git"
+set :application, "ffxiv-fishing"
+set :repo_url, "git@github.com:kotarou1192/ffxiv-fishing-backend.git"
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
@@ -20,11 +20,17 @@ set :repo_url, "git@example.com:me/my_repo.git"
 # Default value for :pty is false
 # set :pty, true
 
+# ログを詳しく表示
+# set :format, :pretty
+# set :log_level, :debug
+
 # Default value for :linked_files is []
-# append :linked_files, "config/database.yml"
+
+# 共有する設定ファイル
+append :linked_files, 'config/environments/production.rb', 'config/database.yml', 'config/master.key', 'config/credentials.yml.enc'
 
 # Default value for linked_dirs is []
-# append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
+append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets"
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -37,3 +43,29 @@ set :repo_url, "git@example.com:me/my_repo.git"
 
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
+# set :bundle_gemfile, -> { release_path.join('Gemfile') }
+# set :bundle_path, -> { shared_path.join('.bundle') }
+set :rbenv_type, :user
+set :rbenv_custom_path, '/home/rails/.rbenv'
+set :rbenv_ruby, File.read('.ruby-version').strip
+set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} RAILS_ENV=production #{fetch(:rbenv_path)}/bin/rbenv exec"
+set :rbenv_map_bins, %w[rake gem bundle ruby rails]
+set :rbenv_roles, :all
+# set :rbenv_custom_path, '/home/rails/.rbenv'
+
+# bundlerの設定
+append :linked_dirs, '.bundle'
+set :bundle_jobs, 1
+
+# pumaコマンドをbundle execで実行
+append :rbenv_map_bins, 'puma', 'pumactl'
+
+namespace :deploy do
+  task :restart_puma do
+    invoke 'puma:stop'
+    invoke! 'puma:start'
+  end
+end
+
+after 'puma:restart', 'deploy:restart_puma'
+

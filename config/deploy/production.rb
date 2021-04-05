@@ -62,12 +62,12 @@
 server 'aquariumpedia.org', user: 'rails', roles: %w[app db]
 
 set :rails_env, 'production'
-set :branch, 'develop'
+set :branch, 'master'
 
-set :deploy_to, "/var/www/ffxiv-fishing-backend"
+set :deploy_to, "/var/www/html/ffxiv-fishing-backend"
 set :bundle_gemfile, -> { release_path.join('Gemfile') }
 
-ENV['SERVER_TYPE'] = 'development'
+ENV['SERVER_TYPE'] = 'production'
 
 set :ssh_options, {
   user: "#{ENV['SERVER_USER'] || 'rails'}",
