@@ -21,6 +21,9 @@ Bundler.require(*Rails.groups)
 
 module FfxivFishing
   class Application < Rails::Application
+    # Allowed Hosts
+    hosts_list = %w[api.ffxiv-fishing.org ffxiv-fishing.org ffxiv-fishing-api-production]
+    config.hosts.concat hosts_list
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
