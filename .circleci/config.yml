@@ -70,7 +70,7 @@ jobs:
           name: rename database.yml.ci
           command: mv config/database.yml.ci config/database.yml
       - run: bundle exec rails db:create
-      - run: bundle exec rails db:structure:load
+      - run: bundle exec rails db:migrate
       - run:
           name: run tests
           command: bundle exec rails test
