@@ -66,6 +66,3 @@ namespace :deploy do
     invoke! 'puma:start'
   end
 end
-
-after 'puma:restart', 'deploy:restart_puma'
-
